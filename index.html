@@ -108,7 +108,7 @@
         <h1 id="app-title" class="app-title text-xl text-slate-800 cursor-pointer" title="Tap to rename">Kae's Life Design</h1>
       </div>
     </div>
-    <button data-goto="dashboard" class="ml-auto px-4 py-2 rounded-full font-bold bg-[#34C8C5] text-[#0B3B3A] shadow-sm active:scale-95">Dash</button>
+    
     </header>
 
   <!-- Main Scrollable Content -->
@@ -501,9 +501,12 @@
   </div>
 
   <!-- Bottom Navigation Bar -->
-  <nav class="fixed bottom-[56px] w-full bg-white border-t border-slate-100 nav-pb-safe z-40 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] md:!top-0 md:!bottom-0 md:!left-0 md:!w-24 md:!h-full md:overflow-y-auto md:!rounded-none md:!border-t-0 md:!border-r md:!pb-0 md:!shadow-none">
+  <nav class="fixed bottom-[56px] w-full bg-white border-t border-slate-100 nav-pb-safe z-40 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.05)] md:!top-0 md:!bottom-0 md:!left-0 md:!w-24 md:!h-full md:!rounded-none md:!border-t-0 md:!border-r md:!pb-0 md:!shadow-none">
     <div class="flex justify-around items-center p-2 md:flex-col md:justify-start md:gap-2 md:pt-20" md:gap-1 md:pt-8
       
+      <button data-target="dashboard" class="nav-btn flex flex-col items-center justify-center w-16 h-12 rounded-2xl transition-all bg-slate-50 text-pink-500 scale-105 active-nav" data-color="pink">
+        <i data-lucide="layout-dashboard" class="w-6 h-6 mb-1"></i><span class="text-[10px] font-bold">Dash</span>
+      </button>
       <button data-target="secondbrain" class="nav-btn flex flex-col items-center justify-center w-16 h-12 rounded-2xl transition-all text-slate-400 hover:text-purple-500" data-color="purple">
         <i data-lucide="brain" class="w-6 h-6 mb-1"></i><span class="text-[10px] font-bold">Brain</span>
       </button>
