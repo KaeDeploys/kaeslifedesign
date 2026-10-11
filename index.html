@@ -712,7 +712,6 @@
 
     // One page switcher used by the menu and by any [data-goto] button
     function goTo(target) {
-      showErr('Page switch requested: ' + target);
       document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
       const view = document.getElementById('view-' + target);
       if (view) view.classList.add('active');
