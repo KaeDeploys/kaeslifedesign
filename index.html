@@ -1754,22 +1754,46 @@
       const key = tile.dataset.tile;
       if (!appData.free || !appData.free[key]) return;
       const f = appData.free[key];
-      dragState = { key, tile, mode: handle ? 'resize' : 'move', sx: e.clientX, sy: e.clientY, start: { ...f }, W: dash.clientWidth };
+      dragState = { key, tile, mode: handle ? 'resize' : 'move', sx: e.clientX, sy: e.clientY, start: { ...f }, W: dash.clientWidth, snap: JSON.parse(JSON.stringify(appData.free)) };
       tile.style.zIndex = 20;
       tile.setPointerCapture(e.pointerId);
     });
+    // Push any tile that overlaps the moved tile down below it, repeating until nothing overlaps
+    function overlaps(a, b) {
+      return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    }
+    function resolveFree(free, movedKey) {
+      const GAP = 12;
+      const placed = [movedKey];
+      const others = Object.keys(free).filter(k => k !== movedKey).sort((a, b) => free[a].y - free[b].y);
+      others.forEach(k => {
+        const f = free[k];
+        let again = true;
+        while (again) {
+          again = false;
+          for (const pk of placed) {
+            if (overlaps(f, free[pk])) { f.y = free[pk].y + free[pk].h + GAP; again = true; }
+          }
+        }
+        placed.push(k);
+      });
+    }
+
     dash.addEventListener('pointermove', (e) => {
       if (!dragState) return;
       const d = dragState;
-      const f = appData.free[d.key];
+      const base = JSON.parse(JSON.stringify(d.snap));       // start from the positions before this drag
+      const f = base[d.key];
       const dx = e.clientX - d.sx, dy = e.clientY - d.sy;
       if (d.mode === 'move') {
-        f.x = Math.max(0, Math.min(100 - f.w, d.start.x + (dx / d.W) * 100));
-        f.y = Math.max(60, d.start.y + dy);
+        f.x = Math.round(Math.max(0, Math.min(100 - f.w, d.start.x + (dx / d.W) * 100)));
+        f.y = Math.round(Math.max(60, d.start.y + dy) / 8) * 8;
       } else {
-        f.w = Math.max(14, Math.min(100 - f.x, d.start.w + (dx / d.W) * 100));
-        f.h = Math.max(90, d.start.h + dy);
+        f.w = Math.round(Math.max(14, Math.min(100 - f.x, d.start.w + (dx / d.W) * 100)));
+        f.h = Math.round(Math.max(90, d.start.h + dy) / 8) * 8;
       }
+      resolveFree(base, d.key);
+      appData.free = base;
       applyFreeform();
     });
     const endDrag = () => {
