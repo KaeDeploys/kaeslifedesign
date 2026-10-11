@@ -1,0 +1,13 @@
+{
+  "name": "Kae's Life Design",
+  "short_name": "Kae's Life",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FDEEEA",
+  "theme_color": "#DF84BD",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
