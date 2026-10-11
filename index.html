@@ -42,6 +42,13 @@
     .tab-content h1, .tab-content h2, .tab-content h3 { text-align: center !important; justify-content: center; }
     /* The old + button is hidden: each page has its own add form */
     #btn-fab { display: none !important; }
+    /* Tasks page: one stacked column with the wrapping add form, on every screen size */
+    #view-tasks .md\:grid-cols-3 { display: block !important; }
+    #view-tasks .md\:grid-cols-3 > div + div { margin-top: 16px; }
+    #view-tasks .flex.gap-2 { flex-wrap: wrap; }
+    #view-tasks input#task-page-input { flex: 1 1 100%; }
+    #view-tasks select { flex: 1 1 30%; min-width: 0; }
+    #view-tasks button#task-page-add { flex: 1 1 100%; }
     /* Phones: the menu becomes a bottom bar that scrolls sideways, and the page uses the full width */
     @media (max-width: 767px) {
       body { overflow: hidden; }
@@ -71,6 +78,21 @@
       #view-dashboard { height: auto !important; }
       .tab-content h1, .tab-content h2 { font-size: 1.9rem !important; }
       .tab-content h3 { font-size: 1.5rem !important; }
+      /* Nothing on a page may be wider than the screen */
+      #main-scroll { min-width: 0; overflow-x: hidden; }
+      .tab-content { max-width: 100%; }
+      .tab-content input, .tab-content select, .tab-content textarea { min-width: 0; max-width: 100%; }
+      /* Tasks: the add form wraps onto more lines */
+      #view-tasks .flex.gap-2 { flex-wrap: wrap; }
+      #view-tasks input#task-page-input { flex: 1 1 100%; }
+      #view-tasks select { flex: 1 1 45%; min-width: 0; }
+      #view-tasks button#task-page-add { flex: 1 1 100%; }
+      /* Habits: the name, streak, and buttons stack instead of squeezing */
+      #view-habits .flex.items-center.justify-between { flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+      #view-habits .flex.items-center.justify-between > .min-w-0 { flex: 1 1 100%; min-width: 0; }
+      #view-habits .flex.items-center.justify-between > .flex.gap-1 { flex-wrap: wrap; }
+      #view-habits .flex.items-center.gap-2.min-w-0 { min-width: 0; }
+      #view-habits .flex.items-center.gap-2.min-w-0 p { white-space: normal; overflow-wrap: anywhere; }
     }
     #view-dashboard h2, #view-dashboard h3, #view-tasks h2, #view-tasks h3 { text-align: center; }
     /* Freeform dashboard: drag and resize tiles anywhere */
