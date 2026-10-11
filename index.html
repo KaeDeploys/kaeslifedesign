@@ -80,6 +80,18 @@
   </style>
 </head>
 <body class="flex flex-col h-[100dvh]">
+  <div id="err-box" style="display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#ffe4e4;color:#7a0000;padding:8px 12px;font:12px ui-monospace,monospace;white-space:pre-wrap;max-height:40vh;overflow:auto"></div>
+  <script>
+    function showErr(msg) {
+      const box = document.getElementById('err-box');
+      if (!box) return;
+      box.style.display = 'block';
+      box.textContent += String(msg) + '\n';
+    }
+    window.addEventListener('error', (e) => showErr('ERROR: ' + e.message + ' (line ' + e.lineno + ')'));
+    window.addEventListener('unhandledrejection', (e) => showErr('PROMISE: ' + ((e.reason && e.reason.message) || e.reason)));
+    </script>
+
 
   <!-- Top Header -->
   <header class="pt-safe bg-white px-6 py-4 flex items-center justify-between shadow-sm z-10 rounded-b-3xl shrink-0 md:ml-24">
@@ -1231,8 +1243,8 @@
 
     const _renderAllBase = renderAll;
     renderAll = function () {
-      try { _renderAllBase(); } catch (err) { console.error('Base render failed:', err); }
-      try { renderExtras(); } catch (err) { console.error('Dashboard render failed:', err); }
+      try { _renderAllBase(); } catch (err) { showErr('Base render: ' + err.message); }
+      try { renderExtras(); } catch (err) { showErr('Dashboard render: ' + err.message + ' ' + ((err.stack || '').split('\n')[1] || '')); }
       if (window.lucide) lucide.createIcons();
     };
 
@@ -1646,8 +1658,8 @@
       });
     }
 
-    colorTiles();
-    renderFocus();
+    try { colorTiles(); } catch (err) { showErr('colorTiles: ' + err.message); }
+    try { renderFocus(); } catch (err) { showErr('renderFocus: ' + err.message); }
     // Initialize App
     renderAll();
   </script>
