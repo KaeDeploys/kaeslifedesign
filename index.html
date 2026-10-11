@@ -135,15 +135,15 @@
         <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#34C8C5]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Tasks this week</p>
-            <p id="stat-tasks" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p>
+            <p id="stat-tasks" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-tasks-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#34C8C5"></div></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#FC8A8E]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Habits</p>
-            <p id="stat-habits" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p>
+            <p id="stat-habits" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-habits-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#FC8A8E"></div></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#FFAE69]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Goals</p>
-            <p id="stat-goals" class="text-2xl font-extrabold text-slate-800 mt-1">0%</p>
+            <p id="stat-goals" class="text-2xl font-extrabold text-slate-800 mt-1">0%</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-goals-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#FFAE69"></div></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#DF84BD]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Next up</p>
@@ -253,6 +253,19 @@
               <button id="focus-start" class="px-6 py-2 rounded-2xl font-bold bg-[#34C8C5] text-[#0B3B3A] active:scale-95">Start</button>
               <button id="focus-reset" class="px-4 py-2 rounded-2xl font-bold bg-slate-100 text-slate-600 active:scale-95">Reset</button>
             </div>
+          </div>
+        </div>
+
+        <!-- Monthly overview -->
+        <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100">
+          <h3 class="font-extrabold text-lg text-slate-800 mb-1">Monthly overview</h3>
+          <p id="mo-title" class="text-sm font-bold text-slate-500 mb-3"></p>
+          <div id="mo-grid" class="grid grid-cols-7 gap-1"></div>
+          <div class="flex flex-wrap gap-3 justify-center mt-4 text-xs font-bold text-slate-600">
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full" style="background:#34C8C5"></span>Low priority</span>
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full" style="background:#FFAE69"></span>Medium priority</span>
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full" style="background:#FC8A8E"></span>High priority</span>
+            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full" style="background:#DF84BD"></span>Event</span>
           </div>
         </div>
       </div>
@@ -1049,6 +1062,53 @@
     // ----- App title -----
     appData.appTitle = appData.appTitle || "Kae's Life Design";
 
+    // ----- Stage 3: monthly overview and progress bars -----
+    const PRIO_HEX = { low: '#34C8C5', medium: '#FFAE69', high: '#FC8A8E' };
+    const PRIO_TINT = { low: '#D6F3F2', medium: '#FFE6A8', high: '#FFD0D0' };
+    const EVENT_HEX = '#DF84BD';
+    const EVENT_TINT = '#F3DDEF';
+    const PRIO_RANK = { high: 0, medium: 1, low: 2 };
+
+    function renderMonthly() {
+      const now = new Date();
+      const y = now.getFullYear(), m = now.getMonth();
+      document.getElementById('mo-title').textContent = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      const lead = new Date(y, m, 1).getDay();
+      const days = new Date(y, m + 1, 0).getDate();
+      const today = todayISO();
+      let html = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="text-[10px] font-extrabold text-slate-400 text-center">${d}</div>`).join('');
+      for (let i = 0; i < lead; i++) html += '<div></div>';
+      for (let d = 1; d <= days; d++) {
+        const iso = `${y}-${pad2(m + 1)}-${pad2(d)}`;
+        const tasks = appData.tasks.filter(t => !t.completed && t.due === iso)
+          .sort((a, b) => PRIO_RANK[prio(a)] - PRIO_RANK[prio(b)]);
+        const evs = appData.events.filter(e => e.date === iso);
+        const dots = [
+          ...tasks.slice(0, 2).map(t => `<span class="w-1.5 h-1.5 rounded-full" style="background:${PRIO_HEX[prio(t)]}"></span>`),
+          ...evs.slice(0, 2).map(() => `<span class="w-1.5 h-1.5 rounded-full" style="background:${EVENT_HEX}"></span>`)
+        ].join('');
+        const bg = evs.length ? EVENT_TINT : tasks.length ? PRIO_TINT[prio(tasks[0])] : '#FFFFFF';
+        html += `
+          <button data-mo-day="${iso}" class="aspect-square rounded-xl flex flex-col items-center justify-center text-xs font-bold text-slate-700 transition-transform active:scale-90 ${iso === today ? 'ring-2 ring-slate-700' : ''}" style="background:${bg}">
+            <span>${d}</span>
+            <span class="flex gap-0.5 mt-0.5 h-2 items-center">${dots}</span>
+          </button>`;
+      }
+      document.getElementById('mo-grid').innerHTML = html;
+    }
+
+    function renderStatBars() {
+      const tasks = appData.tasks;
+      const weekActive = tasks.filter(t => taskInWeek(t)).length;
+      const weekDone = appData.archive.filter(a => a.kind === 'task' && weekDueOK(a.data.due)).length;
+      const total = weekDone + weekActive;
+      document.getElementById('stat-tasks-bar').style.width = (total ? Math.round((weekDone / total) * 100) : 0) + '%';
+      const hb = appData.habits;
+      document.getElementById('stat-habits-bar').style.width = (hb.length ? Math.round((hb.filter(x => habitDoneToday(x)).length / hb.length) * 100) : 0) + '%';
+      const gs = appData.goals;
+      document.getElementById('stat-goals-bar').style.width = (gs.length ? Math.round(gs.reduce((s, g) => s + goalProgress(g), 0) / gs.length) : 0) + '%';
+    }
+
     // ----- Stage 2: priority, steps, break it down -----
     const PRIO = {
       low:    { label: 'Priority: Low',    cls: 'bg-[#D6F3F2] text-[#0B3B3A]' },
@@ -1202,9 +1262,11 @@
       document.getElementById('habits-manage').innerHTML = appData.habits.length
         ? appData.habits.map(hb => {
             const done = habitDoneToday(hb);
-            const squares = Array.from({ length: 28 }, (_, i) => {
-              const d = new Date(); d.setDate(d.getDate() - (27 - i));
-              const iso = toISO(d);
+            const now = new Date();
+            const monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const squares = Array.from({ length: daysInMonth }, (_, i) => {
+              const iso = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(i + 1)}`;
               return `<button data-habit-day="${hb.id}" data-day="${iso}" title="${iso}" class="w-7 h-7 rounded-lg transition-all active:scale-90 ${hb.log[iso] ? 'bg-[#34C8C5]' : 'bg-slate-200'}"></button>`;
             }).join('');
             return `
@@ -1220,8 +1282,8 @@
                   <button data-habit-del="${hb.id}" class="px-2 py-1 rounded-full text-xs font-bold bg-red-50 text-red-500">Delete</button>
                 </div>
               </div>
-              <div class="flex flex-wrap gap-1">${squares}</div>
-              <p class="text-[10px] text-slate-400 mt-2">Tap any day to mark or unmark it. Last 28 days, oldest on the left.</p>
+              <p class="text-xs font-extrabold text-slate-500 mb-1">${monthName}</p><div class="flex flex-wrap gap-1">${squares}</div>
+              <p class="text-[10px] text-slate-400 mt-2">Tap any day to mark or unmark it. Days 1 to the end of the month, left to right.</p>
             </div>`;
           }).join('')
         : '<p class="text-slate-500 text-sm">No habits yet. Add one above.</p>';
@@ -1279,6 +1341,8 @@
       document.title = appData.appTitle;
       renderWater();
       applyFreeform();
+      renderMonthly();
+      renderStatBars();
       renderTasksPage();
       renderCalendar();
     }
@@ -1376,6 +1440,14 @@
           item.steps = (item.steps || []).concat(parts.map((x, i) => ({ id: 's' + Date.now() + i, text: x, done: false })));
           saveData();
         }
+        return;
+      }
+      if ((el = t.closest('[data-mo-day]'))) {
+        calSelected = el.dataset.moDay;
+        const [yy, mm] = calSelected.split('-').map(Number);
+        calYear = yy; calMonth = mm - 1;
+        document.querySelector('.nav-btn[data-target="calendar"]').click();
+        renderCalendar();
         return;
       }
       if ((el = t.closest('[data-water]'))) { tapWater(Number(el.dataset.water)); return; }
@@ -1738,7 +1810,8 @@
         ['Habits today', 'bg-[#D6F3F2]'],
         ['Next 7 days', 'bg-[#FBE0F0]'],
         ['Water', 'bg-[#DDF0F8]'],
-        ['Focus timer', 'bg-[#FFE6CF]']
+        ['Focus timer', 'bg-[#FFE6CF]'],
+        ['Monthly overview', 'bg-[#EDE6FA]']
       ];
       tilesNow().forEach(t => {
         const heads = Array.from(t.querySelectorAll('h1,h2,h3')).map(x => x.textContent.trim());
