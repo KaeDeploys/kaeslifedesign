@@ -728,10 +728,11 @@
       const mainScroll = document.getElementById('main-scroll');
       if (mainScroll) mainScroll.scrollTop = 0;
     }
+    // Every menu button goes through the same page switcher
     document.addEventListener('click', (e) => {
-      const inMenu = e.target.closest && e.target.closest('nav');
-      if (inMenu) showErr('Menu tap reached the page: ' + (e.target.tagName || '?') + ' inside ' + (inMenu.id || inMenu.className.split(' ')[0]));
-      const btn = e.target.closest('[data-goto]');
+      const menuBtn = e.target.closest && e.target.closest('.nav-btn');
+      if (menuBtn && menuBtn.dataset.target) { goTo(menuBtn.dataset.target); return; }
+      const btn = e.target.closest && e.target.closest('[data-goto]');
       if (btn) { goTo(btn.dataset.goto); }
     }, true);
 
