@@ -721,6 +721,8 @@
         });
 
         document.getElementById(`view-${target}`).classList.add('active');
+        const mainScroll = document.getElementById('main-scroll');
+        if (mainScroll) mainScroll.scrollTop = 0;   // open every page from the top, so a long page can't leave the next one blank
         btn.className = `nav-btn flex flex-col items-center justify-center w-16 h-12 rounded-2xl transition-all bg-slate-50 text-${color}-500 scale-105 active-nav`;
         const icon = btn.querySelector('i');
         if(icon) icon.classList.add('fill-current/20');
@@ -2049,6 +2051,22 @@
 
     try { colorTiles(); } catch (err) { showErr('colorTiles: ' + err.message); }
     try { centerTiles(); } catch (err) { showErr('centerTiles: ' + err.message); }
+    // Diagnostic: report what is sitting on top of the Dash button, and what a tap in the menu column hits
+    function describeEl(el) {
+      if (!el) return 'nothing';
+      return (el.tagName || '?') + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ').slice(0, 3).join('.') : '');
+    }
+    setTimeout(() => {
+      const dashBtn = document.querySelector('.nav-btn[data-target="dashboard"]');
+      if (dashBtn) {
+        const r = dashBtn.getBoundingClientRect();
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        showErr('DASH BUTTON box: ' + Math.round(r.left) + ',' + Math.round(r.top) + ' ' + Math.round(r.width) + 'x' + Math.round(r.height) + ' | top element there: ' + describeEl(hit));
+      }
+    }, 800);
+    document.addEventListener('click', (e) => {
+      if (e.clientX < 110) showErr('Menu-column tap at ' + Math.round(e.clientX) + ',' + Math.round(e.clientY) + ' hit: ' + describeEl(e.target));
+    }, true);
     try { renderFocus(); } catch (err) { showErr('renderFocus: ' + err.message); }
     // Initialize App
     renderAll();
