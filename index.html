@@ -38,6 +38,10 @@
     h1, .app-title { font-size: 2.6rem !important; }
     h2 { font-size: 2.4rem !important; }
     h3 { font-size: 1.9rem !important; }
+    /* Headings centered on every page */
+    .tab-content h1, .tab-content h2, .tab-content h3 { text-align: center !important; justify-content: center; }
+    /* The old + button is hidden: each page has its own add form */
+    #btn-fab { display: none !important; }
     #view-dashboard h2, #view-dashboard h3, #view-tasks h2, #view-tasks h3 { text-align: center; }
     /* Freeform dashboard: drag and resize tiles anywhere */
     #view-dashboard.freeform.active { display: block !important; position: relative; }
@@ -224,11 +228,11 @@
 
         <!-- Water tracker -->
         <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100">
-          <div class="flex items-center justify-between mb-3">
+          <div class="flex flex-col items-center mb-3">
             <h3 class="font-extrabold text-lg text-slate-800">Water</h3>
             <p id="water-count" class="text-sm font-bold text-blue-600">0 / 8</p>
           </div>
-          <div id="water-drops" class="flex gap-1"></div>
+          <div id="water-drops" class="flex justify-center gap-1"></div>
         </div>
 
         <!-- Focus timer -->
@@ -279,26 +283,18 @@
       <div id="view-tasks" class="tab-content animate-fade-in">
         <div class="bg-white rounded-[2rem] p-5 shadow-md border border-slate-100 mb-4">
           <h2 class="text-2xl font-extrabold text-slate-800 mb-1">All tasks</h2>
-          <p class="text-sm text-slate-500 mb-4">Grouped by the energy they need. Checking one off moves it to the archive.</p>
+          <p class="text-sm text-slate-500 mb-4">Columns show energy. The Priority chip shows how important a task is. Checking one off moves it to the archive.</p>
           <div id="tf-chips" class="flex flex-wrap gap-2 mb-4"></div>
           <div class="flex gap-2">
             <input id="task-page-input" type="text" placeholder="New task" class="flex-1 bg-slate-50 rounded-2xl p-3 font-medium focus:outline-none focus:ring-2 focus:ring-[#34C8C5]" />
-            <select id="task-page-prio" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none">
-              <option value="low">Low</option>
-              <option value="medium" selected>Medium</option>
-              <option value="high">High</option>
-            </select>
+            <select id="task-page-prio" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none"><option value="low">Priority: Low</option><option value="medium" selected>Priority: Medium</option><option value="high">Priority: High</option></select>
             <select id="task-page-when" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none">
               <option value="today">Today</option>
               <option value="week" selected>This week</option>
               <option value="month">This month</option>
               <option value="later">Later</option>
             </select>
-            <select id="task-page-energy" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none">
-              <option value="low">Low</option>
-              <option value="okay" selected>Medium</option>
-              <option value="charged">High</option>
-            </select>
+            <select id="task-page-energy" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none"><option value="low">Energy: Low</option><option value="okay" selected>Energy: Medium</option><option value="charged">Energy: High</option></select>
             <button id="task-page-add" class="px-5 py-3 rounded-2xl font-bold bg-[#34C8C5] text-[#0B3B3A] active:scale-95">Add</button>
           </div>
         </div>
@@ -851,7 +847,7 @@
         icon.classList.add('rotate-45');
         
         // Auto-focus first input
-        setTimeout(() => { document.getElementById('form-input-1').focus(); }, 100);
+        setTimeout(() => { document.getElementById('form-input-1')?.focus(); }, 100);
       } else {
         modal.classList.add('hidden');
         fab.classList.replace('bg-slate-800', 'bg-[#FC8A8E]');
@@ -1029,9 +1025,9 @@
 
     // ----- Stage 2: priority, steps, break it down -----
     const PRIO = {
-      low:    { label: 'Low',    cls: 'bg-[#D6F3F2] text-[#0B3B3A]' },
-      medium: { label: 'Medium', cls: 'bg-[#FFE6A8] text-[#5C3A00]' },
-      high:   { label: 'High',   cls: 'bg-[#FFD0D0] text-[#7A0000]' }
+      low:    { label: 'Priority: Low',    cls: 'bg-[#D6F3F2] text-[#0B3B3A]' },
+      medium: { label: 'Priority: Medium', cls: 'bg-[#FFE6A8] text-[#5C3A00]' },
+      high:   { label: 'Priority: High',   cls: 'bg-[#FFD0D0] text-[#7A0000]' }
     };
     const prio = (t) => t.priority || 'medium';
     const openSteps = {};
@@ -1280,20 +1276,22 @@
         document.getElementById(groups[level]).innerHTML = list.length
           ? list.map(t => {
               const steps = t.steps || [];
-              const stepCount = steps.length ? `${steps.filter(s => s.done).length}/${steps.length}` : 'Steps';
+              const stepCount = steps.length ? `${steps.filter(s => s.done).length}/${steps.length} steps` : 'Steps';
               return `
               <div class="bg-white rounded-2xl shadow-sm p-3">
-                <div class="flex items-center gap-2">
-                  <button data-action="toggle-task" data-id="${t.id}" class="flex-shrink-0 w-7 h-7 rounded-full border-2 border-slate-300 hover:border-[#34C8C5] transition-colors" aria-label="Complete task"></button>
+                <div class="flex items-start gap-3">
+                  <button data-action="toggle-task" data-id="${t.id}" class="flex-shrink-0 w-7 h-7 mt-0.5 rounded-full border-2 border-slate-300 hover:border-[#34C8C5] transition-colors" aria-label="Complete task"></button>
                   <div class="flex-1 min-w-0">
-                    <p class="font-bold text-slate-700 text-sm truncate">${escHtml(t.title)}</p>
+                    <p class="font-bold text-slate-700 text-base leading-snug break-words">${escHtml(t.title)}</p>
                     <p class="text-[11px] font-bold text-slate-400">${taskLabel(t)}</p>
                   </div>
-                  <button data-prio="${t.id}" class="px-2 py-1 rounded-full text-xs font-bold ${PRIO[prio(t)].cls}">${PRIO[prio(t)].label}</button>
-                  <button data-steps-open="${t.id}" class="px-2 py-1 rounded-full text-xs font-bold bg-white text-slate-500">${stepCount}</button>
-                  <button data-edit="task" data-id="${t.id}" data-field="title" class="px-2 py-1 rounded-full text-xs font-bold bg-white text-slate-500 hover:bg-blue-100">Edit</button>
-                  <button data-due-edit="${t.id}" class="px-2 py-1 rounded-full text-xs font-bold bg-white text-slate-500 hover:bg-blue-100">Due</button>
                   <button data-action="delete-task" data-id="${t.id}" class="text-slate-300 hover:text-red-400 p-1 font-bold" aria-label="Delete task">&times;</button>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-2 pl-10">
+                  <button data-prio="${t.id}" class="px-3 py-1 rounded-full text-xs font-bold ${PRIO[prio(t)].cls}">${PRIO[prio(t)].label}</button>
+                  <button data-steps-open="${t.id}" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">${stepCount}</button>
+                  <button data-edit="task" data-id="${t.id}" data-field="title" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 hover:bg-blue-100">Edit</button>
+                  <button data-due-edit="${t.id}" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 hover:bg-blue-100">Due</button>
                 </div>
                 ${openSteps[t.id] ? stepsBlock('task', t) : ''}
               </div>`;
