@@ -135,15 +135,15 @@
         <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#34C8C5]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Tasks this week</p>
-            <p id="stat-tasks" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-tasks-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#34C8C5"></div></div>
+            <p id="stat-tasks" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="mt-2 flex justify-center"><svg viewBox="0 0 36 36" class="w-14 h-14 -rotate-90"><circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3.5"/><circle id="stat-tasks-bar" cx="18" cy="18" r="15.9" fill="none" stroke="#34C8C5" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#FC8A8E]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Habits</p>
-            <p id="stat-habits" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-habits-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#FC8A8E"></div></div>
+            <p id="stat-habits" class="text-2xl font-extrabold text-slate-800 mt-1">0/0</p><div class="mt-2 flex justify-center"><svg viewBox="0 0 36 36" class="w-14 h-14 -rotate-90"><circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3.5"/><circle id="stat-habits-bar" cx="18" cy="18" r="15.9" fill="none" stroke="#FC8A8E" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#FFAE69]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Goals</p>
-            <p id="stat-goals" class="text-2xl font-extrabold text-slate-800 mt-1">0%</p><div class="h-2 bg-white/70 rounded-full mt-2 overflow-hidden"><div id="stat-goals-bar" class="h-2 rounded-full transition-all duration-500" style="width:0%; background:#FFAE69"></div></div>
+            <p id="stat-goals" class="text-2xl font-extrabold text-slate-800 mt-1">0%</p><div class="mt-2 flex justify-center"><svg viewBox="0 0 36 36" class="w-14 h-14 -rotate-90"><circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3.5"/><circle id="stat-goals-bar" cx="18" cy="18" r="15.9" fill="none" stroke="#FFAE69" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg></div>
           </div>
           <div class="bg-white rounded-3xl p-4 shadow-sm border-t-4 border-[#DF84BD]">
             <p class="text-[11px] font-extrabold uppercase text-slate-400">Next up</p>
@@ -289,6 +289,20 @@
           <h2 class="text-2xl font-extrabold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="archive" class="w-6 h-6"></i> Archive</h2>
           <p class="text-xs text-slate-500 mb-4">Completed tasks, finished goals, and past events live here. Nothing is lost until you delete it.</p>
           <div id="archive-list" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- INSIGHTS TAB -->
+      <div id="view-insights" class="tab-content animate-fade-in">
+        <div class="bg-white rounded-[2rem] p-6 shadow-md border border-slate-100 min-h-[70vh] space-y-5">
+          <h2 class="text-2xl font-extrabold text-slate-800 flex items-center justify-center gap-2"><i data-lucide="bar-chart-3" class="w-6 h-6"></i> Insights</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-[#FFF1C7] rounded-[1.5rem] p-4"><h3 class="font-extrabold text-lg text-slate-800 mb-2">Tasks finished, last 8 weeks</h3><div id="ins-tasks"></div></div>
+            <div class="bg-[#D6F3F2] rounded-[1.5rem] p-4"><h3 class="font-extrabold text-lg text-slate-800 mb-2">Habit consistency, last 30 days</h3><div id="ins-habits"></div></div>
+            <div class="bg-[#DDF0F8] rounded-[1.5rem] p-4"><h3 class="font-extrabold text-lg text-slate-800 mb-2">Water, last 7 days</h3><div id="ins-water"></div></div>
+            <div class="bg-[#FBE0F0] rounded-[1.5rem] p-4"><h3 class="font-extrabold text-lg text-slate-800 mb-2">Tasks by priority</h3><div id="ins-priority"></div></div>
+            <div class="bg-[#FFE6CF] rounded-[1.5rem] p-4 md:col-span-2"><h3 class="font-extrabold text-lg text-slate-800 mb-2">Goals</h3><div id="ins-goals"></div></div>
+          </div>
         </div>
       </div>
 
@@ -517,6 +531,9 @@
       </button>
       <button data-target="archive" class="nav-btn flex flex-col items-center justify-center w-16 h-14 rounded-2xl transition-all text-slate-400 hover:text-slate-700" data-color="slate">
         <i data-lucide="archive" class="w-6 h-6 mb-1"></i><span class="text-[10px] font-bold">Archive</span>
+      </button>
+      <button data-target="insights" class="nav-btn flex flex-col items-center justify-center w-16 h-14 rounded-2xl transition-all text-slate-400 hover:text-violet-500" data-color="violet">
+        <i data-lucide="bar-chart-3" class="w-6 h-6 mb-1"></i><span class="text-[10px] font-bold">Insights</span>
       </button>
     </div>
   </nav>
@@ -991,13 +1008,6 @@
       if (hb.log[iso]) delete hb.log[iso]; else hb.log[iso] = true;
       saveData();
     }
-    function habitStreak(hb) {
-      const d = new Date();
-      if (!hb.log[toISO(d)]) d.setDate(d.getDate() - 1);
-      let k = 0;
-      while (hb.log[toISO(d)]) { k++; d.setDate(d.getDate() - 1); }
-      return k;
-    }
     function habitPercent(hb) {
       let n = 0;
       const base = new Date();
@@ -1062,6 +1072,131 @@
     // ----- App title -----
     appData.appTitle = appData.appTitle || "Kae's Life Design";
 
+    // ----- Stage 4: rest days, progress rings, insights -----
+    function parseISO(iso) { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); }
+    function weekStartISO(d) {
+      const x = new Date(d);
+      x.setDate(x.getDate() - ((x.getDay() + 6) % 7));     // Monday starts the week
+      return toISO(x);
+    }
+    function ringSVG(pct, color, cls) {
+      const v = Math.max(0, Math.min(100, Math.round(pct || 0)));
+      return `<svg viewBox="0 0 36 36" class="${cls} -rotate-90 flex-shrink-0" aria-hidden="true">
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="#E2E8F0" stroke-width="3.5"/>
+        <circle cx="18" cy="18" r="15.9" fill="none" stroke="${color}" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="${100 - v}"/>
+      </svg>`;
+    }
+    // A habit streak survives a miss: each week, one missed day is covered automatically,
+    // unless you have already planned a rest day that week.
+    function habitStreak(hb) {
+      const manual = hb.rest || {};
+      const weekHasManual = (iso) => {
+        const ws = weekStartISO(parseISO(iso));
+        return Object.keys(manual).some(r => weekStartISO(parseISO(r)) === ws);
+      };
+      const usedWeeks = new Set();
+      const d = new Date();
+      if (!(hb.log[toISO(d)] || manual[toISO(d)])) d.setDate(d.getDate() - 1);
+      let k = 0;
+      for (let guard = 0; guard < 3650; guard++) {
+        const iso = toISO(d);
+        const ws = weekStartISO(d);
+        if (hb.log[iso] || manual[iso]) k++;
+        else if (!usedWeeks.has(ws) && !weekHasManual(iso)) { usedWeeks.add(ws); k++; }
+        else break;
+        d.setDate(d.getDate() - 1);
+      }
+      return k;
+    }
+    function toggleRest(hb) {
+      hb.rest = hb.rest || {};
+      const iso = todayISO();
+      if (hb.rest[iso]) { delete hb.rest[iso]; saveData(); return; }
+      const ws = weekStartISO(new Date());
+      if (Object.keys(hb.rest).some(r => weekStartISO(parseISO(r)) === ws)) {
+        alert('You already planned a rest day for this habit this week.');
+        return;
+      }
+      hb.rest[iso] = true;
+      saveData();
+    }
+
+    // Bar chart drawn as SVG
+    function barChart(items, color) {
+      if (!items.length) return '<p class="text-sm text-slate-500">Nothing to show yet.</p>';
+      const w = 340, hgt = 170, pad = 16;
+      const max = Math.max(1, ...items.map(i => i.value));
+      const bw = (w - pad * 2) / items.length;
+      let s = `<svg viewBox="0 0 ${w} ${hgt}" class="w-full h-auto">`;
+      items.forEach((it, i) => {
+        const bh = (it.value / max) * (hgt - 50);
+        const x = pad + i * bw + bw * 0.15;
+        const y = hgt - 30 - bh;
+        s += `<rect x="${x}" y="${y}" width="${bw * 0.7}" height="${bh}" rx="6" fill="${color}"/>`;
+        s += `<text x="${x + bw * 0.35}" y="${y - 5}" text-anchor="middle" font-size="11" fill="#334155">${it.value}</text>`;
+        s += `<text x="${x + bw * 0.35}" y="${hgt - 10}" text-anchor="middle" font-size="10" fill="#64748B">${escHtml(it.label)}</text>`;
+      });
+      return s + '</svg>';
+    }
+
+    function renderInsights() {
+      const box = (id) => document.getElementById(id);
+      if (!box('ins-tasks')) return;
+      const now = new Date();
+      const mon = new Date(now);
+      mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      mon.setHours(0, 0, 0, 0);
+      const weeks = [];
+      for (let k = 7; k >= 0; k--) {
+        const s = new Date(mon); s.setDate(mon.getDate() - 7 * k);
+        const e = new Date(s); e.setDate(s.getDate() + 7);
+        const n = appData.archive.filter(a => a.kind === 'task' && a.archivedAt >= s.getTime() && a.archivedAt < e.getTime()).length;
+        weeks.push({ label: `${s.getMonth() + 1}/${s.getDate()}`, value: n });
+      }
+      box('ins-tasks').innerHTML = barChart(weeks, '#34C8C5');
+
+      box('ins-habits').innerHTML = barChart(
+        appData.habits.map(hb => ({ label: hb.name.slice(0, 6), value: habitPercent(hb) })), '#FC8A8E');
+
+      const water = [];
+      for (let k = 6; k >= 0; k--) {
+        const d = new Date(); d.setDate(d.getDate() - k);
+        water.push({ label: d.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 2), value: appData.water[toISO(d)] || 0 });
+      }
+      box('ins-water').innerHTML = barChart(water, '#3B82F6');
+
+      const pri = { low: 0, medium: 0, high: 0 };
+      appData.tasks.filter(t => !t.completed).forEach(t => { pri[prio(t)]++; });
+      appData.archive.filter(a => a.kind === 'task').forEach(a => { pri[(a.data && a.data.priority) || 'medium']++; });
+      box('ins-priority').innerHTML = barChart([
+        { label: 'Low', value: pri.low }, { label: 'Medium', value: pri.medium }, { label: 'High', value: pri.high }
+      ], '#DF84BD');
+
+      box('ins-goals').innerHTML = appData.goals.length
+        ? appData.goals.map(g => `
+            <div class="flex items-center gap-3 mb-2">
+              ${ringSVG(goalProgress(g), '#FFAE69', 'w-12 h-12')}
+              <span class="font-bold text-slate-700">${escHtml(g.title)} · ${goalProgress(g)}%</span>
+            </div>`).join('')
+        : '<p class="text-sm text-slate-500">No goals yet.</p>';
+    }
+
+    // Stat rings on the dashboard
+    function renderStatBars() {
+      const set = (id, pct) => {
+        const el = document.getElementById(id);
+        if (el) el.style.strokeDashoffset = 100 - Math.max(0, Math.min(100, Math.round(pct)));
+      };
+      const weekActive = appData.tasks.filter(t => taskInWeek(t)).length;
+      const weekDone = appData.archive.filter(a => a.kind === 'task' && weekDueOK(a.data.due)).length;
+      const total = weekDone + weekActive;
+      set('stat-tasks-bar', total ? (weekDone / total) * 100 : 0);
+      const hb = appData.habits;
+      set('stat-habits-bar', hb.length ? (hb.filter(x => habitDoneToday(x)).length / hb.length) * 100 : 0);
+      const gs = appData.goals;
+      set('stat-goals-bar', gs.length ? gs.reduce((s, g) => s + goalProgress(g), 0) / gs.length : 0);
+    }
+
     // ----- Stage 3: monthly overview and progress bars -----
     const PRIO_HEX = { low: '#34C8C5', medium: '#FFAE69', high: '#FC8A8E' };
     const PRIO_TINT = { low: '#D6F3F2', medium: '#FFE6A8', high: '#FFD0D0' };
@@ -1095,18 +1230,6 @@
           </button>`;
       }
       document.getElementById('mo-grid').innerHTML = html;
-    }
-
-    function renderStatBars() {
-      const tasks = appData.tasks;
-      const weekActive = tasks.filter(t => taskInWeek(t)).length;
-      const weekDone = appData.archive.filter(a => a.kind === 'task' && weekDueOK(a.data.due)).length;
-      const total = weekDone + weekActive;
-      document.getElementById('stat-tasks-bar').style.width = (total ? Math.round((weekDone / total) * 100) : 0) + '%';
-      const hb = appData.habits;
-      document.getElementById('stat-habits-bar').style.width = (hb.length ? Math.round((hb.filter(x => habitDoneToday(x)).length / hb.length) * 100) : 0) + '%';
-      const gs = appData.goals;
-      document.getElementById('stat-goals-bar').style.width = (gs.length ? Math.round(gs.reduce((s, g) => s + goalProgress(g), 0) / gs.length) : 0) + '%';
     }
 
     // ----- Stage 2: priority, steps, break it down -----
@@ -1241,7 +1364,7 @@
             return `
             <div class="bg-white rounded-2xl p-4 shadow-sm">
               <div class="flex justify-between items-center mb-2 gap-2">
-                <span class="font-bold text-slate-800">${escHtml(g.title)}</span>
+                <span class="flex items-center gap-2 font-bold text-slate-800">${ringSVG(pct, '#FFAE69', 'w-8 h-8')}${escHtml(g.title)}</span>
                 <div class="flex gap-1 shrink-0">
                   ${g.steps && g.steps.length ? '' : `<button data-goal="${g.id}" class="text-xs font-bold px-3 py-1 rounded-full bg-[#FFAE69] text-slate-900 active:scale-95">+10%</button>`}
                   ${pct >= 100 ? `<button data-goal-arch="${g.id}" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">Archive</button>` : ''}
@@ -1267,23 +1390,24 @@
             const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             const squares = Array.from({ length: daysInMonth }, (_, i) => {
               const iso = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(i + 1)}`;
-              return `<button data-habit-day="${hb.id}" data-day="${iso}" title="${iso}" class="w-7 h-7 rounded-lg transition-all active:scale-90 ${hb.log[iso] ? 'bg-[#34C8C5]' : 'bg-slate-200'}"></button>`;
+              return `<button data-habit-day="${hb.id}" data-day="${iso}" title="${iso}" class="w-7 h-7 rounded-lg transition-all active:scale-90 ${hb.log[iso] ? 'bg-[#34C8C5]' : (hb.rest && hb.rest[iso]) ? 'bg-[#FFD27A]' : 'bg-slate-200'}"></button>`;
             }).join('');
             return `
             <div class="bg-white rounded-2xl p-4 shadow-sm">
               <div class="flex items-center justify-between gap-2 mb-3">
                 <div class="min-w-0">
-                  <p class="font-bold text-slate-800 truncate">${escHtml(hb.name)}</p>
+                  <div class="flex items-center gap-2 min-w-0">${ringSVG(habitPercent(hb), '#34C8C5', 'w-10 h-10')}<p class="font-bold text-slate-800 truncate">${escHtml(hb.name)}</p></div>
                   <p class="text-xs text-slate-500">${habitStreak(hb)} day streak · ${habitPercent(hb)}% last 30 days</p>
                 </div>
                 <div class="flex gap-1 shrink-0">
+                  <button data-habit-rest="${hb.id}" class="px-3 py-1 rounded-full text-xs font-bold ${hb.rest && hb.rest[todayISO()] ? 'bg-[#FFD27A] text-slate-800' : 'bg-slate-100 text-slate-600'}">${hb.rest && hb.rest[todayISO()] ? 'Rest set' : 'Rest day'}</button>
                   <button data-habit-today="${hb.id}" class="px-3 py-1 rounded-full text-xs font-bold ${done ? 'bg-[#34C8C5] text-white' : 'bg-slate-100 text-slate-600'}">${done ? 'Done today' : 'Mark today'}</button>
                   <button data-habit-rename="${hb.id}" class="px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Rename</button>
                   <button data-habit-del="${hb.id}" class="px-2 py-1 rounded-full text-xs font-bold bg-red-50 text-red-500">Delete</button>
                 </div>
               </div>
               <p class="text-xs font-extrabold text-slate-500 mb-1">${monthName}</p><div class="flex flex-wrap gap-1">${squares}</div>
-              <p class="text-[10px] text-slate-400 mt-2">Tap any day to mark or unmark it. Days 1 to the end of the month, left to right.</p>
+              <p class="text-[10px] text-slate-400 mt-2">Tap a day to mark it. Yellow days are rest days. One missed day a week is covered automatically.</p>
             </div>`;
           }).join('')
         : '<p class="text-slate-500 text-sm">No habits yet. Add one above.</p>';
@@ -1343,6 +1467,7 @@
       applyFreeform();
       renderMonthly();
       renderStatBars();
+      renderInsights();
       renderTasksPage();
       renderCalendar();
     }
@@ -1440,6 +1565,11 @@
           item.steps = (item.steps || []).concat(parts.map((x, i) => ({ id: 's' + Date.now() + i, text: x, done: false })));
           saveData();
         }
+        return;
+      }
+      if ((el = t.closest('[data-habit-rest]'))) {
+        const hb = appData.habits.find(x => x.id === el.dataset.habitRest);
+        if (hb) toggleRest(hb);
         return;
       }
       if ((el = t.closest('[data-mo-day]'))) {
