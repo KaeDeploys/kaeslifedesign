@@ -711,6 +711,7 @@
 
     // One page switcher used by the menu and by any [data-goto] button
     function goTo(target) {
+      showErr('Page switch requested: ' + target);
       document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
       const view = document.getElementById('view-' + target);
       if (view) view.classList.add('active');
@@ -728,6 +729,8 @@
       if (mainScroll) mainScroll.scrollTop = 0;
     }
     document.addEventListener('click', (e) => {
+      const inMenu = e.target.closest && e.target.closest('nav');
+      if (inMenu) showErr('Menu tap reached the page: ' + (e.target.tagName || '?') + ' inside ' + (inMenu.id || inMenu.className.split(' ')[0]));
       const btn = e.target.closest('[data-goto]');
       if (btn) { goTo(btn.dataset.goto); }
     }, true);
