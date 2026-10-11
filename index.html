@@ -85,7 +85,7 @@
   </style>
 </head>
 <body class="flex flex-col h-[100dvh]">
-  <div id="err-box" style="display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#ffe4e4;color:#7a0000;padding:8px 12px;font:12px ui-monospace,monospace;white-space:pre-wrap;max-height:40vh;overflow:auto"></div>
+  <div id="err-box" style="display:none;pointer-events:none;position:fixed;top:0;left:0;right:0;z-index:30;background:#ffe4e4;color:#7a0000;padding:8px 12px;font:12px ui-monospace,monospace;white-space:pre-wrap;max-height:40vh;overflow:auto"></div>
   <script>
     function showErr(msg) {
       const box = document.getElementById('err-box');
@@ -2051,22 +2051,7 @@
 
     try { colorTiles(); } catch (err) { showErr('colorTiles: ' + err.message); }
     try { centerTiles(); } catch (err) { showErr('centerTiles: ' + err.message); }
-    // Diagnostic: report what is sitting on top of the Dash button, and what a tap in the menu column hits
-    function describeEl(el) {
-      if (!el) return 'nothing';
-      return (el.tagName || '?') + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.split(' ').slice(0, 3).join('.') : '');
-    }
-    setTimeout(() => {
-      const dashBtn = document.querySelector('.nav-btn[data-target="dashboard"]');
-      if (dashBtn) {
-        const r = dashBtn.getBoundingClientRect();
-        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        showErr('DASH BUTTON box: ' + Math.round(r.left) + ',' + Math.round(r.top) + ' ' + Math.round(r.width) + 'x' + Math.round(r.height) + ' | top element there: ' + describeEl(hit));
-      }
-    }, 800);
-    document.addEventListener('click', (e) => {
-      if (e.clientX < 110) showErr('Menu-column tap at ' + Math.round(e.clientX) + ',' + Math.round(e.clientY) + ' hit: ' + describeEl(e.target));
-    }, true);
+
     try { renderFocus(); } catch (err) { showErr('renderFocus: ' + err.message); }
     // Initialize App
     renderAll();
