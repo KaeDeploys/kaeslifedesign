@@ -1570,7 +1570,7 @@
 
     // ----- Colorful dashboard tiles (palette tints) -----
     function colorTiles() {
-      const swap = (el, cls) => { el.classList.remove('bg-white'); cls.split(' ').forEach(c => el.classList.add(c)); };
+      const swap = (el, cls) => { if (!el || !cls) return; el.classList.remove('bg-white'); cls.split(' ').forEach(c => el.classList.add(c)); };
       const byHeading = [
         ['Energy Check-in', 'bg-[#FFF1C7]'],
         ['Habits today', 'bg-[#D6F3F2]'],
