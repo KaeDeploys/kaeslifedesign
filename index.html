@@ -364,6 +364,10 @@
             <i data-lucide="brain" class="w-6 h-6 mr-2"></i> Second Brain
           </h2>
           <p class="text-purple-700 text-sm font-medium mb-6">Dump ideas here. Keep your working memory clear.</p>
+          <div class="flex gap-2 mb-4">
+            <input id="note-add-input" type="text" placeholder="Dump an idea here" class="flex-1 bg-white rounded-2xl p-3 font-medium focus:outline-none focus:ring-2 focus:ring-purple-300" />
+            <button id="note-add-btn" class="px-5 py-3 rounded-2xl font-bold bg-[#DF84BD] text-[#3B0F2E] active:scale-95">Add</button>
+          </div>
           <div id="notes-container" class="space-y-4">
             <!-- Notes injected here -->
           </div>
@@ -378,6 +382,17 @@
             <i data-lucide="zap" class="w-6 h-6 mr-2"></i> Dopamine Menu
           </h2>
           <p class="text-orange-700 text-sm font-medium mb-6">Quick hits of joy when you are under-stimulated.</p>
+          <div class="bg-white rounded-2xl p-4 shadow-sm mb-6 space-y-2">
+            <input id="dop-add-title" type="text" placeholder="A quick joy you enjoy" class="w-full bg-slate-50 rounded-2xl p-3 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300" />
+            <div class="flex gap-2">
+              <select id="dop-add-time" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none">
+                <option value="5m">5 min</option>
+                <option value="15m" selected>15 min</option>
+                <option value="30m+">30+ min</option>
+              </select>
+              <button id="dop-add-btn" class="flex-1 px-5 py-3 rounded-2xl font-bold bg-[#FFAE69] text-slate-900 active:scale-95">Add</button>
+            </div>
+          </div>
           <div id="dopamine-container" class="space-y-6">
             <!-- Dopamine categories injected here -->
           </div>
@@ -410,6 +425,17 @@
             <i data-lucide="piggy-bank" class="w-6 h-6 mr-2"></i> Save
           </h2>
           <p class="text-emerald-700 text-sm font-medium mb-6">Track your savings goals and quick expenses.</p>
+          <div class="bg-white rounded-2xl p-4 shadow-sm mb-4 space-y-2">
+            <input id="fin-add-title" type="text" placeholder="Name (e.g. Emergency fund)" class="w-full bg-slate-50 rounded-2xl p-3 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-300" />
+            <div class="flex gap-2">
+              <input id="fin-add-amount" type="number" step="0.01" placeholder="Amount" class="flex-1 bg-slate-50 rounded-2xl p-3 font-medium focus:outline-none" />
+              <select id="fin-add-type" class="bg-slate-50 rounded-2xl p-3 font-bold text-slate-700 focus:outline-none">
+                <option value="Goal">Savings goal</option>
+                <option value="Expense">Expense</option>
+              </select>
+              <button id="fin-add-btn" class="px-5 py-3 rounded-2xl font-bold bg-emerald-400 text-emerald-950 active:scale-95">Add</button>
+            </div>
+          </div>
           <div id="finance-container" class="space-y-3">
             <!-- Finances injected here -->
           </div>
@@ -1544,6 +1570,40 @@
       appData.tasks.unshift({ id: 't' + Date.now(), title: input.value.trim(), energy, due, priority, steps: [], completed: false, createdAt: Date.now() });
       input.value = ''; saveData();
     });
+    // ----- Add forms for Brain, Joy, and Save -----
+    function addNote() {
+      const el = document.getElementById('note-add-input');
+      const v = el.value.trim();
+      if (!v) return;
+      appData.notes.unshift({ id: 'n' + Date.now(), content: v, createdAt: Date.now() });
+      el.value = '';
+      saveData();
+    }
+    function addJoy() {
+      const t = document.getElementById('dop-add-title');
+      const v = t.value.trim();
+      if (!v) return;
+      appData.dopamine.unshift({ id: 'd' + Date.now(), title: v, time: document.getElementById('dop-add-time').value, icon: 'star' });
+      t.value = '';
+      saveData();
+    }
+    function addMoney() {
+      const t = document.getElementById('fin-add-title');
+      const a = document.getElementById('fin-add-amount');
+      const v = t.value.trim();
+      const amt = parseFloat(a.value);
+      if (!v || isNaN(amt)) return;
+      appData.finances.unshift({ id: 'f' + Date.now(), title: v, amount: amt.toFixed(2), type: document.getElementById('fin-add-type').value });
+      t.value = ''; a.value = '';
+      saveData();
+    }
+    document.getElementById('note-add-btn').addEventListener('click', addNote);
+    document.getElementById('note-add-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') addNote(); });
+    document.getElementById('dop-add-btn').addEventListener('click', addJoy);
+    document.getElementById('dop-add-title').addEventListener('keydown', (e) => { if (e.key === 'Enter') addJoy(); });
+    document.getElementById('fin-add-btn').addEventListener('click', addMoney);
+    document.getElementById('fin-add-title').addEventListener('keydown', (e) => { if (e.key === 'Enter') addMoney(); });
+
     bindAdd('event-title', 'event-add', () => {
       const title = document.getElementById('event-title');
       const time = document.getElementById('event-time');
