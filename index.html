@@ -42,6 +42,7 @@
     .tab-content h1, .tab-content h2, .tab-content h3 { text-align: center !important; justify-content: center; }
     /* The old + button is hidden: each page has its own add form */
     #btn-fab { display: none !important; }
+    .tile-tools { display: none; }
     /* Tasks page: one stacked column with the wrapping add form, on every screen size */
     #view-tasks .md\:grid-cols-3 { display: block !important; }
     #view-tasks .md\:grid-cols-3 > div + div { margin-top: 16px; }
@@ -78,6 +79,9 @@
       #view-dashboard { height: auto !important; }
       .tab-content h1, .tab-content h2 { font-size: 1.9rem !important; }
       .tab-content h3 { font-size: 1.5rem !important; }
+      .resize-handle { display: none !important; }
+      #view-dashboard.editing .tile-tools { display: flex; position: absolute; top: -14px; right: 10px; z-index: 30; gap: 6px; }
+      .tile-tools button { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 9999px; padding: 2px 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
       /* Nothing on a page may be wider than the screen */
       #main-scroll { min-width: 0; overflow-x: hidden; }
       .tab-content { max-width: 100%; }
@@ -1666,6 +1670,18 @@
       if ((el = t.closest('[data-focus-min]'))) { setPreset(Number(el.dataset.focusMin)); return; }
       if (t.closest('#focus-start')) { focusStart(); return; }
       if (t.closest('#focus-reset')) { focusReset(); return; }
+      if ((el = t.closest('[data-phone-move]'))) {
+        const key = el.dataset.tile;
+        const order = (appData.phoneOrder || tilesNow().map(x => x.dataset.tile)).slice();
+        const i = order.indexOf(key);
+        const j = i + (el.dataset.phoneMove === 'up' ? -1 : 1);
+        if (i >= 0 && j >= 0 && j < order.length) {
+          [order[i], order[j]] = [order[j], order[i]];
+          appData.phoneOrder = order;
+          saveData();
+        }
+        return;
+      }
       if (t.closest('#layout-toggle')) {
         const btn = t.closest('#layout-toggle');
         if (!appData.free) seedFreeform();
@@ -1674,7 +1690,7 @@
         return;
       }
       if (t.closest('#layout-reset')) {
-        if (confirm('Reset the dashboard to the original layout?')) { delete appData.free; saveData(); }
+        if (confirm('Reset the dashboard to the original layout?')) { delete appData.free; delete appData.phoneOrder; saveData(); }
         return;
       }
       if (t.closest('#backup-open')) {
@@ -1905,6 +1921,10 @@
       handle.className = 'resize-handle';
       handle.setAttribute('aria-label', 'Resize');
       el.appendChild(handle);
+      const tools = document.createElement('div');
+      tools.className = 'tile-tools';
+      tools.innerHTML = `<button data-phone-move="up" data-tile="${el.dataset.tile}" aria-label="Move up">&uarr;</button><button data-phone-move="down" data-tile="${el.dataset.tile}" aria-label="Move down">&darr;</button>`;
+      el.appendChild(tools);
     });
 
     // Copy the current grid positions into freeform positions (percent for x and width, pixels for y and height)
@@ -1927,6 +1947,17 @@
     }
 
     function applyFreeform() {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        dash.classList.remove('freeform');
+        tilesNow().forEach(el => el.removeAttribute('style'));
+        dash.style.height = '';
+        const map = {};
+        tilesNow().forEach(el => { map[el.dataset.tile] = el; });
+        if (!appData.phoneOrder) appData.phoneOrder = Object.keys(map).sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
+        const keys = appData.phoneOrder.filter(k => map[k]).concat(Object.keys(map).filter(k => !appData.phoneOrder.includes(k)));
+        keys.forEach(k => dash.appendChild(map[k]));
+        return;
+      }
       if (!appData.free) {
         dash.classList.remove('freeform');
         tilesNow().forEach(el => { el.removeAttribute('style'); });
